@@ -1,0 +1,136 @@
+Script started on Fri 24 Jun 2011 10:27:36 PM PDT
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                               ]0;torben@dekstop: ~/cs410/hw1 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw1[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[193C [194Dccat incrementArray.cu[1m [0m[0m [K
+]0;torben@dekstop: cat incrementArray.cu // incrementArray.cu
+#include <stdio.h>
+#include <assert.h>
+#include <cuda.h>
+void incrementArrayOnHost(float *a, int N)
+{
+    int i;
+    for (i=0; i < N; i++) a[i] = a[i]+1.f;
+}
+__global__ void incrementArrayOnDevice(float *a, int N)
+{
+    int idx = blockIdx.x*blockDim.x + threadIdx.x;
+    if (idx<N) a[idx] = a[idx]+1.f;
+}
+int main(void)
+{
+    float *a_h, *b_h;           // pointers to host memory
+    float *a_d;                 // pointer to device memory
+    int i, N = 20;
+    size_t size = N*sizeof(float);
+    // allocate arrays on host
+    a_h = (float *)malloc(size);
+    b_h = (float *)malloc(size);
+    // allocate array on device 
+    cudaMalloc((void **) &a_d, size);
+    // initialization of host data
+    for (i=0; i<N; i++) a_h[i] = (float)i;
+    // copy data from host to device
+    cudaMemcpy(a_d, a_h, sizeof(float)*N, cudaMemcpyHostToDevice);
+
+    printf("Original array:\n");
+    for(i=0; i<N; i++)
+        printf("a_h[%d]\t= %f\n", i, a_h[i]);
+    printf("\n");
+
+    // do calculation on host
+    incrementArrayOnHost(a_h, N);
+
+    printf("Host array (incremented):\n");
+    for(i=0; i<N; i++)
+        printf("a_h[%d]\t= %f\n", i, a_h[i]);
+    printf("\n");
+
+    // do calculation on device:
+    // Part 1 of 2. Compute execution configuration
+    int blockSize = 4;
+    int nBlocks = N/blockSize + (N%blockSize == 0?0:1);
+
+    // Part 2 of 2. Call incrementArrayOnDevice kernel 
+    incrementArrayOnDevice <<< nBlocks, blockSize >>> (a_d, N);
+    // Retrieve result from device and store in b_h
+    cudaMemcpy(b_h, a_d, sizeof(float)*N, cudaMemcpyDeviceToHost);
+    // check results
+    for (i=0; i<N; i++) assert(a_h[i] == b_h[i]);
+
+    printf("Device array (incremented):\n");
+    for(i=0; i<N; i++)
+        printf("b_h[%d]\t= %f\n", i, b_h[i]);
+    printf("\n");
+
+    // cleanup
+    free(a_h); free(b_h); cudaFree(a_d); 
+}
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                               ]0;torben@dekstop: ~/cs410/hw1 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw1[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[193C [194Dnnvcc incrementArray.cu[1m [0m[0m [K
+]0;torben@dekstop: nvcc incrementArray.cu [1m[7m%[27m[1m[0m                                                                                                                                                                                                                                               ]0;torben@dekstop: ~/cs410/hw1 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw1[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[193C [194D../a.out[K
+]0;torben@dekstop: ./a.out Original array:
+a_h[0]	= 0.000000
+a_h[1]	= 1.000000
+a_h[2]	= 2.000000
+a_h[3]	= 3.000000
+a_h[4]	= 4.000000
+a_h[5]	= 5.000000
+a_h[6]	= 6.000000
+a_h[7]	= 7.000000
+a_h[8]	= 8.000000
+a_h[9]	= 9.000000
+a_h[10]	= 10.000000
+a_h[11]	= 11.000000
+a_h[12]	= 12.000000
+a_h[13]	= 13.000000
+a_h[14]	= 14.000000
+a_h[15]	= 15.000000
+a_h[16]	= 16.000000
+a_h[17]	= 17.000000
+a_h[18]	= 18.000000
+a_h[19]	= 19.000000
+
+Host array (incremented):
+a_h[0]	= 1.000000
+a_h[1]	= 2.000000
+a_h[2]	= 3.000000
+a_h[3]	= 4.000000
+a_h[4]	= 5.000000
+a_h[5]	= 6.000000
+a_h[6]	= 7.000000
+a_h[7]	= 8.000000
+a_h[8]	= 9.000000
+a_h[9]	= 10.000000
+a_h[10]	= 11.000000
+a_h[11]	= 12.000000
+a_h[12]	= 13.000000
+a_h[13]	= 14.000000
+a_h[14]	= 15.000000
+a_h[15]	= 16.000000
+a_h[16]	= 17.000000
+a_h[17]	= 18.000000
+a_h[18]	= 19.000000
+a_h[19]	= 20.000000
+
+Device array (incremented):
+b_h[0]	= 1.000000
+b_h[1]	= 2.000000
+b_h[2]	= 3.000000
+b_h[3]	= 4.000000
+b_h[4]	= 5.000000
+b_h[5]	= 6.000000
+b_h[6]	= 7.000000
+b_h[7]	= 8.000000
+b_h[8]	= 9.000000
+b_h[9]	= 10.000000
+b_h[10]	= 11.000000
+b_h[11]	= 12.000000
+b_h[12]	= 13.000000
+b_h[13]	= 14.000000
+b_h[14]	= 15.000000
+b_h[15]	= 16.000000
+b_h[16]	= 17.000000
+b_h[17]	= 18.000000
+b_h[18]	= 19.000000
+b_h[19]	= 20.000000
+
+[1m[7m%[27m[1m[0m                                                                                                                                                                                                                                               ]0;torben@dekstop: ~/cs410/hw1 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw1[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[193C [194Deexit[K
+]0;torben@dekstop: exit 
+Script done on Fri 24 Jun 2011 10:27:54 PM PDT

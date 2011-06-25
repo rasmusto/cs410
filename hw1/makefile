@@ -1,0 +1,2 @@
+default:
+	nvcc incrementArray.cu
