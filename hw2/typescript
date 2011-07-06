@@ -1,0 +1,113 @@
+Script started on Tue 05 Jul 2011 11:58:10 PM PDT
+[1m[7m%[27m[1m[0m                                                                                                       ]0;torben@dekstop: ~/cs410/hw2 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw2[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[57C [58Dmmake[K
+]0;torben@dekstop: make gcc -Wall -Wextra -g -std=c99 -o sequential.o sequential.c
+sequential.c: In function ‘main’:
+sequential.c:8:14: warning: unused parameter ‘argc’
+sequential.c:8:27: warning: unused parameter ‘argv’
+gcc -Wall -Wextra -g -std=c99 -fopenmp -o openmp.o openmp.c
+openmp.c: In function ‘main’:
+openmp.c:8:14: warning: unused parameter ‘argc’
+openmp.c:8:27: warning: unused parameter ‘argv’
+gcc -Wall -Wextra -g -std=c99 -lpthread -o pthreads.o pthreads.c
+pthreads.c: In function ‘main’:
+pthreads.c:27:14: warning: unused parameter ‘argc’
+pthreads.c:27:27: warning: unused parameter ‘argv’
+nvcc --compiler-options -Wall -o cuda.o cuda.cu 
+[1m[7m%[27m[1m[0m                                                                                                       ]0;torben@dekstop: ~/cs410/hw2 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw2[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[57C [58D../sequential.o[1m [0m[0m [K
+]0;torben@dekstop: ./sequential.o Please give m and n: 3 3
+Initializing matrix B and vector c
+Vector c:
+c[0] = 2.000000
+c[1] = 2.000000
+c[2] = 2.000000
+Matrix B:
+b[0] = 0.000000
+b[1] = 0.000000
+b[2] = 0.000000
+b[3] = 1.000000
+b[4] = 1.000000
+b[5] = 1.000000
+b[6] = 2.000000
+b[7] = 2.000000
+b[8] = 2.000000
+Executing mxv function for m = 3 n = 3
+Elapsed time: 190us
+Vector a:
+a[0] = 0.000000
+a[1] = 6.000000
+a[2] = 12.000000
+[1m[7m%[27m[1m[0m                                                                                                       ]0;torben@dekstop: ~/cs410/hw2 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw2[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[57C [58D../openmp.o[1m [0m[0m [K
+]0;torben@dekstop: ./openmp.o Please give m and n: 3 3
+Initializing matrix B and vector c
+Vector c:
+c[0] = 2.000000
+c[1] = 2.000000
+c[2] = 2.000000
+Matrix B:
+b[0] = 0.000000
+b[1] = 0.000000
+b[2] = 0.000000
+b[3] = 1.000000
+b[4] = 1.000000
+b[5] = 1.000000
+b[6] = 2.000000
+b[7] = 2.000000
+b[8] = 2.000000
+Executing mxv function for m = 3 n = 3
+Elapsed time: 252us
+Vector a:
+a[0] = 0.000000
+a[1] = 6.000000
+a[2] = 12.000000
+[1m[7m%[27m[1m[0m                                                                                                       ]0;torben@dekstop: ~/cs410/hw2 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw2[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[57C [58D../pthreads.o[1m [0m[0m [K
+]0;torben@dekstop: ./pthreads.o Please give m and n: 3 3
+Initializing matrix B and vector c
+Vector c:
+c[0] = 2.000000
+c[1] = 2.000000
+c[2] = 2.000000
+Matrix B:
+b[0] = 0.000000
+b[1] = 0.000000
+b[2] = 0.000000
+b[3] = 1.000000
+b[4] = 1.000000
+b[5] = 1.000000
+b[6] = 2.000000
+b[7] = 2.000000
+b[8] = 2.000000
+thread_id = 0
+thread_id = 1
+thread_id = 2
+Executing mxv function for m = 3 n = 3
+Elapsed time: 465us
+Vector a:
+a[0] = 0.000000
+a[1] = 6.000000
+a[2] = 12.000000
+[1m[7m%[27m[1m[0m                                                                                                       ]0;torben@dekstop: ~/cs410/hw2 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw2[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[57C [58D../cuda.o[1m [0m[0m [K
+]0;torben@dekstop: ./cuda.o Please give m and n: 3 3
+Initializing matrix B and vector c
+Vector c:
+c_h[0] = 2.000000
+c_h[1] = 2.000000
+c_h[2] = 2.000000
+Matrix B:
+b_h[0] = 0.000000
+b_h[1] = 0.000000
+b_h[2] = 0.000000
+b_h[3] = 1.000000
+b_h[4] = 1.000000
+b_h[5] = 1.000000
+b_h[6] = 2.000000
+b_h[7] = 2.000000
+b_h[8] = 2.000000
+Initializing a to 0
+Elapsed time: 21119us
+Vector a_h:
+a_h[0] = 0.000000
+a_h[1] = 6.000000
+a_h[2] = 12.000000
+[1m[7m%[27m[1m[0m                                                                                                       ]0;torben@dekstop: ~/cs410/hw2 [0m[27m[24m[J[01;31m[37m[34mtorben[00m@dekstop [1m~/cs410/hw2[0m [35m([00mgit[35m)[33m-[35m[[32mmaster[35m][00m % [K[57C [58Deexit[K
+]0;torben@dekstop: exit 
+Script done on Tue 05 Jul 2011 11:58:43 PM PDT
