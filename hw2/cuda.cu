@@ -31,7 +31,7 @@ int main(void)
 
     // allocate array on device 
     cudaMalloc((void **) &a_d, n*sizeof(float));
-    cudaMalloc((void **) &b_d, n*sizeof(float));
+    cudaMalloc((void **) &b_d, m*n*sizeof(float));
     cudaMalloc((void **) &c_d, n*sizeof(float));
 
     // initialization of host data
@@ -57,18 +57,17 @@ int main(void)
 
     // copy data from host to device
     cudaMemcpy(a_d, a_h, m*sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(b_d, b_h, m*sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(b_d, b_h, n*m*sizeof(float), cudaMemcpyHostToDevice);
     cudaMemcpy(c_d, c_h, m*sizeof(float), cudaMemcpyHostToDevice);
 
-    // do calculation on device:
-    // Part 1 of 2. Compute execution configuration
-    int blockSize = m;
-    int nBlocks = m/blockSize + (m%blockSize == 0?0:1);
+    int blockSize = 4;
+    int numBlocks = m;
 
-    // Part 2 of 2. Call incrementArrayOnDevice kernel 
-    vector_multiply_row_device <<< nBlocks, blockSize >>> (a_d, b_d, c_d, m);
-    // Retrieve result from device and store in b_h
+    vector_multiply_row_device <<< blockSize, numBlocks >>> (a_d, b_d, c_d, m);
+
     cudaMemcpy(a_h, a_d, m*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(b_h, b_d, n*m*sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(c_h, c_d, m*sizeof(float), cudaMemcpyDeviceToHost);
 
     printf("Vector a_h:\n");
     for (j=0; j<n; j++)
