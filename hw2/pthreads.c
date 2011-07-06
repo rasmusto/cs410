@@ -1,7 +1,6 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define NUM_THREADS 5
 
 void * mxv(void *threadid);
 
@@ -25,16 +24,12 @@ double *a,*b,*c;
 
 int main(int argc, char * argv[])
 {
-
-
     printf("Please give m and n: ");
     scanf("%d %d",&m,&n);
 
     pthread_t threads[n];
-    pthread_mutex_t mutexsum;
 
     int rc;
-    long t;
 
     if ( (a=(double *)malloc(m*sizeof(double))) == NULL )
         perror("memory allocation for a");

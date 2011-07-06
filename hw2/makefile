@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-Wall -Wextra -g -std=c99
-default: sequential openmp pthreads
+default: sequential openmp pthreads cuda
 
 sequential: sequential.c
 	${CC} ${CFLAGS} -o sequential.o sequential.c
@@ -10,6 +10,9 @@ openmp: openmp.c
 
 pthreads: pthreads.c
 	${CC} ${CFLAGS} -lpthread -o pthreads.o pthreads.c
+
+cuda: cuda.cu
+	nvcc cuda.cu -o cuda.o
 
 clean:
 	rm -f *.o
