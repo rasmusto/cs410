@@ -70,6 +70,10 @@ int main(void)
     // Retrieve result from device and store in b_h
     cudaMemcpy(a_h, a_d, m*sizeof(float), cudaMemcpyDeviceToHost);
 
+    printf("Vector a_h:\n");
+    for (j=0; j<n; j++)
+        printf("a_h[%d] = %f\n", j, a_h[j]);
+
     // cleanup
     free(a_h); free(b_h); free(c_h); cudaFree(a_d); cudaFree(b_d); cudaFree(c_d); 
 }
