@@ -1,6 +1,8 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 
 void * mxv(void *threadid);
 
@@ -30,6 +32,9 @@ int main(int argc, char * argv[])
     pthread_t threads[n];
 
     int rc;
+
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
 
     if ( (a=(double *)malloc(m*sizeof(double))) == NULL )
         perror("memory allocation for a");
@@ -85,6 +90,9 @@ int main(int argc, char * argv[])
     //wait for them all to finish
     for(i=0; i<n; i++)
         pthread_join(threads[i], NULL);
+
+    gettimeofday(&end, NULL);
+    printf("Elapsed time: %ldus\n", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
 
     printf("Vector a:\n");
     for (j=0; j<n; j++)

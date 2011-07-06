@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/time.h>
 
 void mxv(int m, int n, double * restrict a, double * restrict b, double * restrict c);
 
@@ -10,6 +12,9 @@ int main(int argc, char * argv[])
 
     printf("Please give m and n: ");
     scanf("%d %d",&m,&n);
+
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
 
     if ( (a=(double *)malloc(m*sizeof(double))) == NULL )
         perror("memory allocation for a");
@@ -36,6 +41,8 @@ int main(int argc, char * argv[])
 
     printf("Executing mxv function for m = %d n = %d\n",m,n);
     (void) mxv(m, n, a, b, c);
+    gettimeofday(&end, NULL);
+    printf("Elapsed time: %ldus\n", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
 
     printf("Vector a:\n");
     for (j=0; j<n; j++)

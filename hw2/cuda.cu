@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include <cuda.h>
+#include <time.h>
+#include <sys/time.h>
+
 __global__ void vector_multiply_row_device(float * a, float * b, float * c, int m)
 {
     int idx = blockIdx.x*blockDim.x + threadIdx.x;
@@ -13,13 +16,15 @@ __global__ void vector_multiply_row_device(float * a, float * b, float * c, int 
 }
 int main(void)
 {
-    int m, n;
+    float *a_h, *b_h, *c_h;            // pointers to host memory
+    float *a_d, *b_d, *c_d;            // pointers to device memory
+    int i, j, m, n;
+
     printf("Please give m and n: ");
     scanf("%d %d",&m,&n);
 
-    float *a_h, *b_h, *c_h;            // pointers to host memory
-    float *a_d, *b_d, *c_d;            // pointers to device memory
-    int i, j;
+    struct timeval start, end;
+    gettimeofday(&start, NULL);
 
     // allocate arrays on host
     if ( (a_h=(float *)malloc(m*sizeof(float))) == NULL )
@@ -68,6 +73,9 @@ int main(void)
     cudaMemcpy(a_h, a_d, m*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy(b_h, b_d, n*m*sizeof(float), cudaMemcpyDeviceToHost);
     cudaMemcpy(c_h, c_d, m*sizeof(float), cudaMemcpyDeviceToHost);
+
+    gettimeofday(&end, NULL);
+    printf("Elapsed time: %ldus\n", ((end.tv_sec * 1000000 + end.tv_usec) - (start.tv_sec * 1000000 + start.tv_usec)));
 
     printf("Vector a_h:\n");
     for (j=0; j<n; j++)
